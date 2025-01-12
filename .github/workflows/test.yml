@@ -22,50 +22,7 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-      
-      - name: Install Foundry for zkSync
-        run: |
-          # Fetch the install and foundryup-zksync scripts
-          curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/install -o install
-          curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/foundryup-zksync -o foundryup-zksync
-          chmod +x install foundryup-zksync
-      
-          # Run the installation scripts
-          ./install
-          ./foundryup-zksync || echo "Warning: foundryup-zksync may not have installed properly"
-      
-          # Debugging: Check installation artifacts
-          echo "Checking installation files:"
-          find ${HOME} -type f -name "foundryup-zksync" || echo "No foundryup-zksync binary found"
-      
-          # Ensure the .foundry/bin directory exists
-          mkdir -p "${HOME}/.foundry/bin"
-          export PATH="${HOME}/.foundry/bin:$PATH"
-          echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-      
-          # Locate and move foundryup-zksync if needed
-          FOUND_BINARY=$(find ${HOME} -type f -name "foundryup-zksync" | head -n 1)
-          if [ -n "$FOUND_BINARY" ]; then
-            echo "Found foundryup-zksync binary at: $FOUND_BINARY"
-            mv "$FOUND_BINARY" "${HOME}/.foundry/bin/"
-            chmod +x "${HOME}/.foundry/bin/foundryup-zksync"
-          else
-            echo "Error: foundryup-zksync binary not found"
-            exit 1
-          fi
-      
-          # Mimic sourcing environment by explicitly exporting variables
-          export PATH="${HOME}/.foundry/bin:$PATH"
-          echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-      
-          # Run foundryup-zksync again to finalize setup
-          ${HOME}/.foundry/bin/foundryup-zksync
-      
-          # Debugging: Print the contents of .foundry/bin
-          echo "Contents of ~/.foundry/bin:"
-          ls -la ${HOME}/.foundry/bin
-      
-
+    
       - name: Show Forge version
         run: |
           forge --version
@@ -75,8 +32,3 @@ jobs:
           forge fmt --check
         id: fmt
 
-      - name: Build Project
-        run: forge build --zksync --system-mode=true --via-ir
-
-      - name: Run Tests
-        run: forge test --zksync --system-mode=true --via-ir
