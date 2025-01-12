@@ -30,6 +30,8 @@ jobs:
           chmod +x install foundryup-zksync
           ./install
           ./foundryup-zksync
+          source /home/runner/.bashrc
+          foundryup-zksync
 
       - name: Show Forge version
         run: |
