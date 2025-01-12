@@ -29,20 +29,20 @@ jobs:
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/install -o install
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/foundryup-zksync -o foundryup-zksync
           chmod +x install foundryup-zksync
-
+      
           # Run the installation scripts
           ./install
           ./foundryup-zksync || echo "Warning: foundryup-zksync may not have installed properly"
-
-          # Debugging: Check for installation artifacts
+      
+          # Debugging: Check installation artifacts
           echo "Checking installation files:"
           find ${HOME} -type f -name "foundryup-zksync" || echo "No foundryup-zksync binary found"
-
+      
           # Ensure the .foundry/bin directory exists
           mkdir -p "${HOME}/.foundry/bin"
           export PATH="${HOME}/.foundry/bin:$PATH"
           echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-
+      
           # Locate and move foundryup-zksync if needed
           FOUND_BINARY=$(find ${HOME} -type f -name "foundryup-zksync" | head -n 1)
           if [ -n "$FOUND_BINARY" ]; then
@@ -53,16 +53,18 @@ jobs:
             echo "Error: foundryup-zksync binary not found"
             exit 1
           fi
-
-          # Verify the binary is now in the correct location
+      
+          # Mimic sourcing environment by explicitly exporting variables
+          export PATH="${HOME}/.foundry/bin:$PATH"
+          echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
+      
+          # Run foundryup-zksync again to finalize setup
+          ${HOME}/.foundry/bin/foundryup-zksync
+      
+          # Debugging: Print the contents of .foundry/bin
           echo "Contents of ~/.foundry/bin:"
           ls -la ${HOME}/.foundry/bin
-
-          # Run foundryup-zksync
-          ${HOME}/.foundry/bin/foundryup-zksync
-
-
- 
+      
 
       - name: Show Forge version
         run: |
