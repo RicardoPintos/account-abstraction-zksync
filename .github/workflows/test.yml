@@ -32,7 +32,7 @@ jobs:
           ./foundryup-zksync
           export PATH="${HOME}/.foundry/bin:$PATH"
           echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-        
+          foundryup-zksync
 
       - name: Show Forge version
         run: |
