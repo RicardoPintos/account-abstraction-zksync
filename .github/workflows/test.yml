@@ -29,30 +29,40 @@ jobs:
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/install -o install
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/foundryup-zksync -o foundryup-zksync
           chmod +x install foundryup-zksync
-      
+
           # Run the installation scripts
           ./install
           ./foundryup-zksync || echo "Warning: foundryup-zksync may not have installed properly"
-      
+
+          # Debugging: Check for installation artifacts
+          echo "Checking installation files:"
+          find ${HOME} -type f -name "foundryup-zksync" || echo "No foundryup-zksync binary found"
+
           # Ensure the .foundry/bin directory exists
           mkdir -p "${HOME}/.foundry/bin"
           export PATH="${HOME}/.foundry/bin:$PATH"
           echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-      
-          # Debugging: Check if the directory now exists and its contents
-          echo "Contents of ~/.foundry:"
-          ls -la ${HOME}/.foundry || echo "No ~/.foundry directory found"
-      
-          echo "Contents of ~/.foundry/bin:"
-          ls -la ${HOME}/.foundry/bin || echo "No ~/.foundry/bin directory found"
-      
-          # Attempt to run foundryup-zksync if it exists
-          if [ -f "${HOME}/.foundry/bin/foundryup-zksync" ]; then
-            ${HOME}/.foundry/bin/foundryup-zksync
+
+          # Locate and move foundryup-zksync if needed
+          FOUND_BINARY=$(find ${HOME} -type f -name "foundryup-zksync" | head -n 1)
+          if [ -n "$FOUND_BINARY" ]; then
+            echo "Found foundryup-zksync binary at: $FOUND_BINARY"
+            mv "$FOUND_BINARY" "${HOME}/.foundry/bin/"
+            chmod +x "${HOME}/.foundry/bin/foundryup-zksync"
           else
-            echo "Error: foundryup-zksync not found in ~/.foundry/bin"
+            echo "Error: foundryup-zksync binary not found"
             exit 1
-          fi    
+          fi
+
+          # Verify the binary is now in the correct location
+          echo "Contents of ~/.foundry/bin:"
+          ls -la ${HOME}/.foundry/bin
+
+          # Run foundryup-zksync
+          ${HOME}/.foundry/bin/foundryup-zksync
+
+
+ 
 
       - name: Show Forge version
         run: |
