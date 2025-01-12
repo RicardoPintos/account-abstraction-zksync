@@ -20,6 +20,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
       - name: Install Foundry for zkSync
         run: |
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/install -o install
@@ -27,6 +30,10 @@ jobs:
           chmod +x install foundryup-zksync
           ./install
           ./foundryup-zksync
+
+      - name: Show Forge version
+        run: |
+          forge --version
 
       - name: Run Forge fmt
         run: |
