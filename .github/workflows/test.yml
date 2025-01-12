@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-
+      
       - name: Install Foundry for zkSync
         run: |
           curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/foundryup-zksync/install -o install
@@ -30,8 +30,9 @@ jobs:
           chmod +x install foundryup-zksync
           ./install
           ./foundryup-zksync
-          source /home/runner/.bashrc
-          foundryup-zksync
+          export PATH="${HOME}/.foundry/bin:$PATH"
+          echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
+        
 
       - name: Show Forge version
         run: |
