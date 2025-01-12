@@ -32,7 +32,18 @@ jobs:
           ./foundryup-zksync
           export PATH="${HOME}/.foundry/bin:$PATH"
           echo "${HOME}/.foundry/bin" >> $GITHUB_PATH
-          ${HOME}/.foundry/bin/foundryup-zksync
+      
+          # Debugging: Check if foundryup-zksync exists
+          echo "Contents of ~/.foundry/bin:"
+          ls -la ${HOME}/.foundry/bin
+      
+          # Run foundryup-zksync using full path
+          if [ -f "${HOME}/.foundry/bin/foundryup-zksync" ]; then
+            ${HOME}/.foundry/bin/foundryup-zksync
+          else
+            echo "Error: foundryup-zksync not found in ~/.foundry/bin"
+            exit 1
+          fi
 
       - name: Show Forge version
         run: |
